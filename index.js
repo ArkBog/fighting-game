@@ -16,6 +16,16 @@ const background = new Sprite({
   imageSrc: "./assets/background.png"
 })
 
+const shop = new Sprite({
+  position:{
+    x: 500,
+    y: 128
+  },
+  imageSrc: "./assets/shop.png",
+  scale: 2.75,
+  framesMax: 6
+})
+
 const player = new Fighter({
   position: {
     x: 0,
@@ -96,17 +106,6 @@ function determineWinner({player, enemy, timerId}){
   }
 }
 
-let timer = 60;
-let timerId;
-function decreaseTimer() {
-  timerId = setTimeout(decreaseTimer, 1000);
-  if (timer > 0) {
-    timer--;
-    document.querySelector("#timer").innerHTML = timer;
-  }
-  if(timer === 0){
-    determineWinner({player, enemy})
-  }}
 
 decreaseTimer();
 
@@ -115,6 +114,7 @@ function animate() {
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
   background.update();
+  shop.update();
   player.update();
   enemy.update();
 
