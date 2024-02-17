@@ -9,22 +9,22 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 const gravity = 0.7;
 
 const background = new Sprite({
-  position:{
+  position: {
     x: 0,
-    y: 0
+    y: 0,
   },
-  imageSrc: "./assets/background.png"
-})
+  imageSrc: "./assets/background.png",
+});
 
 const shop = new Sprite({
-  position:{
+  position: {
     x: 500,
-    y: 128
+    y: 128,
   },
   imageSrc: "./assets/shop.png",
   scale: 2.75,
-  framesMax: 6
-})
+  framesMax: 6,
+});
 
 const player = new Fighter({
   position: {
@@ -38,6 +38,27 @@ const player = new Fighter({
   offset: {
     x: 0,
     y: 0,
+  },
+  imageSrc: "./assets/samuraiMack/Idle.png",
+  framesMax: 8,
+  scale: 2.5,
+  offset: {
+    x: 215,
+    y: 157,
+  },
+  sprites: {
+    idle: {
+      imageSrc: "./assets/samuraiMack/Idle.png",
+      framesMax: 8,
+    },
+    run: {
+      imageSrc: "./assets/samuraiMack/Run.png",
+      framesMax: 8,
+    },
+    jump: {
+      imageSrc: "./assets/samuraiMack/Jump.png",
+      framesMax: 2,
+    },
   },
 });
 
@@ -92,20 +113,17 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
   );
 }
 
-function determineWinner({player, enemy, timerId}){
+function determineWinner({ player, enemy, timerId }) {
   clearTimeout(timerId);
-  document.querySelector("#displayText").style.display = "flex"
-  if(player.health === enemy.health ){
-    document.querySelector("#displayText").innerHTML = "Tie"
-  }
-  else if (player.health > enemy.health){
-    document.querySelector("#displayText").innerHTML = "Player 1 Wins"
-  }
-  else if (enemy.health > player.health){
-    document.querySelector("#displayText").innerHTML = "Player 2 Wins"
+  document.querySelector("#displayText").style.display = "flex";
+  if (player.health === enemy.health) {
+    document.querySelector("#displayText").innerHTML = "Tie";
+  } else if (player.health > enemy.health) {
+    document.querySelector("#displayText").innerHTML = "Player 1 Wins";
+  } else if (enemy.health > player.health) {
+    document.querySelector("#displayText").innerHTML = "Player 2 Wins";
   }
 }
-
 
 decreaseTimer();
 
@@ -116,15 +134,22 @@ function animate() {
   background.update();
   shop.update();
   player.update();
-  enemy.update();
+  // enemy.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
 
+  player.switchSprite('idle')
   if (keys.ArrowRight.pressed && player.lastKey === "ArrowRight") {
     player.velocity.x = 5;
+    player.switchSprite('run')
   } else if (keys.ArrowLeft.pressed && player.lastKey === "ArrowLeft") {
     player.velocity.x = -5;
+    player.switchSprite('run')
+  }
+
+  if(player.velocity.y < 0){
+    player.switchSprite('jump')
   }
 
   if (keys.d.pressed && enemy.lastKey === "d") {
@@ -150,8 +175,8 @@ function animate() {
     document.querySelector("#playerHealth").style.width = player.health + "%";
   }
 
-  if (enemy.health <= 0 || player.health <= 0){
-    determineWinner({player, enemy, timerId});
+  if (enemy.health <= 0 || player.health <= 0) {
+    determineWinner({ player, enemy, timerId });
   }
 }
 
